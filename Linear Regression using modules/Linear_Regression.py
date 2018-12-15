@@ -32,11 +32,30 @@ class  LReg:
             self.c-=(alpha/m)*c_grad
         return self.w,self.c
     
+    def mini_batch_gradient_descent(self,sz,alpha,noi):
+        m=len(self.y)
+        np.random.shuffle([self.X,self.y])
+        for i in range(noi):
+            for j in range(0,m,sz):
+                if(j+sz<m):
+                    e=j+sz
+                else:
+                    e=m
+                X_batch=self.X[j:e,:]
+                y_batch=self.y[j:e,:]
+                pred=np.dot(X_batch,self.w)+self.c
+                w_grad=X_batch.T.dot(pred-y_batch)
+                c_grad=np.sum(pred-y_batch)
+                self.w-=(alpha/m)*w_grad
+                self.c-=(alpha/m)*c_grad
+        return self.w,self.c      
+    
     def predict(self,X):
         y=X.dot(self.w)+self.c
         return y
     
-    def accuracy(self,y_pred,y_test):
+    def accuracy(self,X_test,y_test):
+        y_pred=self.predict(X_test)
         error=(y_pred-y_test)/y_test *100
         acc=100-np.mean(error)
         return acc
