@@ -1,16 +1,21 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
---------------------------------------------MULTI CLASSIFIER CLASS----------------------------------------------------------------
+#--------------------------------------------MULTI CLASSIFIER CLASS----------------------------------------------------------------#
 
 class nn:
     
-    def fit(self,X,y,hidden_layers_sizes):
+    def fit(self,X,Y,hidden_layers_sizes):
         self.X=X
-        self.y=y                              #initialising everything
-        self.m=y.shape[0]
+        self.Y=Y                              #initialising everything
+        self.m=len(Y)
+        self.labels=np.sort(np.unique(Y))
+        print("labels are:",self.labels)
+        noc=len(self.labels)
         n=self.X.shape[1]
-        noc=self.y.shape[1]
+        self.y=np.zeros((self.m,noc))
+        for i in range(self.m):
+            self.y[i,np.argwhere(self.labels==Y[i])]=1
         h_sz=hidden_layers_sizes
         self.noh=len(h_sz)
         self.l_sz=np.insert(h_sz,[0,self.noh],[n,noc])         #it contains the size of each layer
@@ -92,23 +97,17 @@ class nn:
         a[0]=X
         for i in range(1,self.noh+2):
             a[i]=self.sigmoid(a[i-1].dot(self.weights[i-1])+self.bias[i-1])
-        y=a[self.noh+1]
-        p = np.argmax(y, axis=1)
-        y=np.zeros(y.shape)
-        for i in range(len(p)):
-            y[i,p[i]]=1
-        return y
+        p=a[self.noh+1]
+        y_pred=self.labels[np.argmax(p,axis=1)]
+        return y_pred
     
     def accuracy(self,X_test,y_test):     #_________tests the accuracy of the model______#
         y_pred=self.predict(X_test)
-        p1 = np.argmax(y_pred, axis=1)
-        p2 = np.argmax(y_test, axis=1)
-        A=(p1==p2)
-        print(A)
+        A=(y_pred==y_test)
         acc=np.mean(A)*100
         return acc
     
-------------------------------------------------------------------------------------------------------------------------------------------        
+#----------------------------------------------------------------------------------------------------------------------------------------#        
     
     
         
