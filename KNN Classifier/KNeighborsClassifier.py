@@ -5,7 +5,9 @@ class KNeighborsClassifier:
     def fit(self,X,y,k=-1):
         self.X=X
         self.y=y
-        n_c=len(np.unique(y))
+        labels=np.unique(y)
+        print("labels:",labels)
+        n_c=len(labels)
         if(k==-1):
             self.k=n_c+1
         else:
