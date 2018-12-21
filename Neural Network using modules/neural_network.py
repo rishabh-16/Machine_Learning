@@ -47,11 +47,19 @@ class nn:
     
     
     def sigmoid(self,z):
+        """
+        it is the activation function for this neural network module
+        it takes an array and return the activated array
+        """
         ans=1/(1+np.exp(-z))
         return ans   
     
     
     def shuffle_in_unison(self,a, b):
+        """
+        this function simply takes two arrays and shuffle them
+        in such a way that their corressponding values remain same
+        """
         rng_state = np.random.get_state()
         np.random.shuffle(a)
         np.random.set_state(rng_state)
@@ -60,6 +68,10 @@ class nn:
     
     
     def feedforward(self):
+        """
+        this function calculates the value of each layer using current weights and bias
+        a contains the value of each layer
+        """
         self.a=[None]*(self.noh+2)  #initialises a list
         self.a[0]=self.X
         for i in range(1,self.noh+2):
@@ -68,10 +80,18 @@ class nn:
             
               
     def backprop(self):
+        
+        """
+        this function backpropagate error in output layer to get error in hidden layers and further calculates the gradient
+        d contains the error in each layer
+        """
+        
         d=[None]*(self.noh+2)  
         d[self.noh+1]=self.a[self.noh+1]-self.y
+        
         for i in range(self.noh,0,-1):
-            d[i]=d[i+1].dot(self.weights[i].T)*self.a[i]*(1-self.a[i])
+            d[i]=d[i+1].dot(self.weights[i].T)*self.a[i]*(1-self.a[i])     #....calculates error in hidden layers
+            
         weights_grad=[None]*(self.noh+1)
         bias_grad=[None]*(self.noh+1)
         for i in range(self.noh+1):
@@ -83,21 +103,31 @@ class nn:
             
     
     def backprop_mini(self,b_sz):
+        """
+        the value of e takes care of overflow
+        for example:
+            if m = 10
+            and b_sz = 3
+            then correspond mini batch sizes will be : {3,3,3,1}
+            thus avoiding error
+        """
         for j in range(0,self.m,b_sz):                #---to avoid overflow---#
             if(j+b_sz<self.m):
                 e=j+b_sz
             else:
                 e=self.m
+                
             d=[None]*(self.noh+2)  
             d[self.noh+1]=(self.a[self.noh+1])[j:e,:]-self.y[j:e,:]
             for i in range(self.noh,0,-1):
-                d[i]=d[i+1].dot(self.weights[i].T)*self.a[i][j:e,:]*(1-self.a[i][j:e,:])
-            weights_grad=[None]*(self.noh+1)
+                d[i]=d[i+1].dot(self.weights[i].T)*self.a[i][j:e,:]*(1-self.a[i][j:e,:])  #....calculates error in hidden layers
+                
+            weights_grad=[None]*(self.noh+1)       #.....calculates gradients
             bias_grad=[None]*(self.noh+1)
             for i in range(self.noh+1):
                 weights_grad[i]=(1/b_sz)*np.dot(self.a[i][j:e,:].T,d[i+1])+(self.LAMBDA/b_sz)*self.weights[i]
                 bias_grad[i]=(1/b_sz)*np.sum(d[i+1],axis=0)
-                self.weights[i]-=self.alpha*weights_grad[i]
+                self.weights[i]-=self.alpha*weights_grad[i]                                
                 self.bias[i]-=self.alpha*bias_grad[i]
             self.feedforward()   
             
