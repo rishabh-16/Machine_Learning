@@ -131,14 +131,30 @@ class nn:
                 self.bias[i]-=self.alpha*bias_grad[i]
             self.feedforward()   
             
-            
+    def Calcost(self):        #______function to calculate cost______#
+        """
+        it is used to calculate cost of the model 
+        at the current value of weights and bias,
+        the value of cost should be low for a effective model
+        """
+        j=0
+        for i in range(self.m):
+            j += np.log(self.a[self.noh+1][i, ]).dot(-self.y[i, ].T) - np.log(1 - self.a[self.noh+1][i, ]).dot(1 - self.y[i, ].T)
+        j /= self.m
+        return j
+
+
+      
                                    
     def gradient_descent(self,alpha,noi,LAMBDA=0):
         self.LAMBDA=LAMBDA
         self.alpha=alpha
+        self.noi=noi
+        self.Jv=np.zeros(noi)
         for i in range(noi):
             self.feedforward()
             self.backprop()
+            self.Jv[i]=self.Calcost()
         return self.weights,self.weights,self.bias,self.bias    #returning parameters
     
     
@@ -147,9 +163,12 @@ class nn:
     def mini_batch_gradient_descent(self,alpha,noi,b_sz,LAMBDA=0):
         self.LAMBDA=LAMBDA
         self.alpha=alpha
+        self.Jv=np.zeros(noi)
+        self.noi=noi
         for i in range(noi):
             self.feedforward()
             self.backprop_mini(b_sz)
+            self.Jv[i]=self.Calcost()
         return self.weights,self.weights,self.bias,self.bias     #returning parameters
     
     
@@ -175,6 +194,21 @@ class nn:
         A=(y_pred==y_test)
         acc=np.mean(A)*100
         return acc
+    
+    
+    def plot_learning_curve(self):
+        """
+        it plots the cost vs number of iterations curve to 
+        help the user decide the number of iterations and alpha value
+        correspondingly
+        """
+        
+        plt.figure()
+        plt.plot(self.Jv,range(self.noi))
+        plt.xlabel('Number of iterations')
+        plt.ylabel('Cost')
+        plt.title('Cost vs Number of iterations curve')
+       
     
 #----------------------------------------------------------------------------------------------------------------------------------------#        
     
