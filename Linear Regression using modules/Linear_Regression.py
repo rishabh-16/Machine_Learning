@@ -15,7 +15,7 @@ class  LReg:
         m=len(y)
         n=np.shape(X)[1]
         self.X=X
-        self.y=y
+        self.y=y.reshape((len(y),1))
         self.w=np.random.random((n,1)) #weight
         self.b=[0]  #bias
         self.LAMBDA=LAMBDA #---regularization factor---#
@@ -99,6 +99,7 @@ class  LReg:
     
     def accuracy(self,X_test,y_test):      #_________tests accuracy of the model______#
         y_pred=self.predict(X_test)
+        y_test=y_test.reshape((len(y_test),1))
         error=(y_pred-y_test)/y_test *100
         acc=100-abs(np.mean(error))
         return acc

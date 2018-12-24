@@ -14,7 +14,7 @@ class  LogReg:
         m=len(y)
         n=np.shape(X)[1]
         self.X=X
-        self.y=y
+        self.y=y.reshape(len(y),1)
         self.w=np.random.rand(n,1) #weight
         self.b=np.random.rand(1)    #bias
         self.LAMBDA=LAMBDA     #---regularization factor---#
@@ -100,6 +100,7 @@ class  LogReg:
     
     def accuracy(self,X_test,y_test):     #_________tests accuracy of the model______#
         y_pred=self.predict(X_test)
+        y_test=y_test.reshape((len(y_test),1))
         A=(y_pred==y_test)
         acc=np.mean(A)*100
         return acc
