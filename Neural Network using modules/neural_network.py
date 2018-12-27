@@ -27,7 +27,7 @@ class nn:
         h_sz=hidden_layers_sizes
         self.noh=len(h_sz)
         self.l_sz=np.insert(h_sz,[0,self.noh],[n,noc])         #it contains the size of each layer
-                                              
+        print(self.l_sz)
         self.weights=[None]*(self.noh+1)                       #initialising weight list
         self.bias=[None]*(self.noh+1)                          #initialising bias list
 
@@ -76,6 +76,7 @@ class nn:
         self.a[0]=self.X
         for i in range(1,self.noh+2):
             self.a[i]=self.sigmoid(self.a[i-1].dot(self.weights[i-1])+self.bias[i-1])
+            #self.a[i]=self.normalize(np.array(self.a[i]))
             
             
               
@@ -204,7 +205,7 @@ class nn:
         """
         
         plt.figure()
-        plt.plot(self.Jv,range(self.noi))
+        plt.plot(range(self.noi),self.Jv)
         plt.xlabel('Number of iterations')
         plt.ylabel('Cost')
         plt.title('Cost vs Number of iterations curve')

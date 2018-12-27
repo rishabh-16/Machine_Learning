@@ -112,7 +112,7 @@ class  LReg:
         correspondingly
         """
         plt.figure()
-        plt.plot(self.Jv,range(self.noi))
+        plt.plot(range(self.noi),self.Jv)
         plt.xlabel('Number of iterations')
         plt.ylabel('Cost')
         plt.title('Cost vs Number of iterations curve')
