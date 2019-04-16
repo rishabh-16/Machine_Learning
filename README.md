@@ -1,2 +1,2 @@
 # Machine_Learning
-it contains ml codes for winter of codes
+implemented all basic ml algorithms using own functions in python
